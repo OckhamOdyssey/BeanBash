@@ -29,7 +29,7 @@ echo "A no ser que sea imprescindible el uso del SSH, recomendamos bloquearlo ta
 echo ""
 echo ""
 PS3='Elige una opción: '
-options=("Bloquear epoptes" "Bloquear epoptes y SSH" "Activar epoptes" "Activar epoptes y SSH" "Quit")
+options=("Bloquear epoptes" "Bloquear epoptes y SSH" "Activar epoptes" "Activar epoptes y SSH" "Salir")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -92,6 +92,8 @@ do
             service vmware start
             echo "Activando servicio complementario vmware"
             service vmware-USBArbitrator stop
+            echo "Activando epoptes"
+            sudo epoptes-client -c
             echo "Proceso finalizado"
             break
             ;;
@@ -108,10 +110,12 @@ do
         service vmware start
         echo "Activando servicio complementario vmware"
         service vmware-USBArbitrator stop
+        echo "Activando epoptes"
+        sudo epoptes-client -c
         echo "Proceso finalizado"
         break
             ;;
-        "Quit")
+        "Salir")
         echo "¡Adiós!"
             break
             ;;
