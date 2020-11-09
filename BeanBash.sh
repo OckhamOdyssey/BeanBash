@@ -22,7 +22,7 @@ echo "                                              ";
 echo "                                              ";
 echo ""
 echo "Bienvenido a BeanBash. Desde este script podrás bloquear o activar epoptes y/o SSH."
-echo "Este script se distribulle sin ninguna garantía bajo licencia MIT. Copyright (c) 2020 TheRussianHetzer"
+echo "Este script se distribuye sin ninguna garantía bajo licencia MIT. Copyright (c) 2020 TheRussianHetzer"
 echo "Puedes consultar el repositorio de este script en GitHub. https://github.com/TheRussianHetzer/BeanBash"
 echo "Elige la opción que desees realizar.";
 echo "A no ser que sea imprescindible el uso del SSH, recomendamos bloquearlo también. Así puedes evitar que vuelvan a activar epoptes de forma remota."
