@@ -26,7 +26,7 @@ Puedes descargar el script directamente desde GitHub, existen dos maneras de rea
 ## Descargar desde repositorio
 Para descargar desde el repositorio se tiene que tener instalado git, se puede instalar con el siguiente comando:
 ```
-sudo apt install github
+sudo apt install git
 ```
 Con git instalado, tienes que posicionarte en el directorio donde quieras tener el script y ejecutar la siguiente orden:
 ```
