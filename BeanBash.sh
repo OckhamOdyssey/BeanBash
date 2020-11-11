@@ -10,8 +10,6 @@ else echo "Se requieren permisos de administrador para ejecutar el script."
   # Fin de la condición
 fi
 
-#!/bin/bash
-# Bash Menu Script Example
 echo "______                 ______           _     ";
 echo "| ___ \                | ___ \         | |    ";
 echo "| |_/ / ___  __ _ _ __ | |_/ / __ _ ___| |__  ";
