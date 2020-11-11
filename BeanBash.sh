@@ -49,8 +49,8 @@ do
             echo "Bloqueando puerto epoptes por firewall"
             ufw deny 789
             echo "Matando procesos en ejecución restantes"
-            kill $(ps -ax | grep epoptes | cut -d" " -f2) 2> /dev/null
-            kill $(ps -ax | grep epoptes-client | cut -d" " -f2) 2> /dev/null
+            kill $(ps -ax | grep epoptes | cut -d" " -f1) 2> /dev/null
+            kill $(ps -ax | grep epoptes-client | cut -d" " -f1) 2> /dev/null
             echo "Proceso finalizado"
             break
             ;;
@@ -76,8 +76,8 @@ do
             echo "Bloqueando puerto SSH por firewall"
             ufw deny 22/tcp
             echo "Matando procesos en ejecución restantes"
-            kill $(ps -ax | grep epoptes | cut -d" " -f2) 2> /dev/null
-            kill $(ps -ax | grep epoptes-client | cut -d" " -f2) 2> /dev/null
+            kill $(ps -ax | grep epoptes | cut -d" " -f1) 2> /dev/null
+            kill $(ps -ax | grep epoptes-client | cut -d" " -f1) 2> /dev/null
             echo "Proceso finalizado"
             break
             ;;
