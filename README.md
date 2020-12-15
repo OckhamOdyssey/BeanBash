@@ -11,13 +11,11 @@ BeanBash is a script written in Bash dedicated to blocking the epoptes service a
 
 Every time you log in again, epoptes starts again with all services, so the script must be run every time.
 
-This script uses the "service" and "apt" commands so it only works with Debian and its derivatives like Ubuntu.
+This script uses the "service" and "route" commands so it only works with Debian and its derivatives like Ubuntu.
 
-The blocking options stop the VMWare and epoptes services, then detect if ufw is on the system and install it if not. After this, create the rules to block the applications' ports and kill the active processes of epoptes.
+The blocking option stop the VMWare and epoptes services, then detect the epoptes server IP and block it from kernel. After this, create the rules to block the applications' ports and kill the active processes of epoptes.
 
-The activation options remove the applications' port blocking rules, start epoptes and vmware services, and rerun epoptes-client for activation.
-
-If the option includes SSH, perform the same processes by including this service in the commands.
+The activation option remove the IP bloking rule, start epoptes and vmware services, and rerun epoptes-client for activation.
 
 # Download
 

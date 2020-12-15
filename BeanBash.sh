@@ -26,7 +26,7 @@ echo "Unless the use of SSH is essential, we recommend blocking it as well. This
 echo ""
 echo ""
 PS3='Choose an option: '
-options=("Block epoptes" "Block epoptes and SSH" "Activate epoptes" "Activate epoptes y SSH" "Quit")
+options=("Block epoptes" "Activate epoptes" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -37,43 +37,8 @@ do
             service vmware-USBArbitrator stop
             echo "Stopping epoptes service"
             service epoptes-client stop
-            if sudo apt install ufw> /dev/null 2>&1 ; then
-              echo "The firewall is already installed, skipping"
-            else
-              "Installing firewall"
-              sudo apt install -y ufw 1> /dev/null
-            fi
-            echo "Activating firewall"
-            ufw enable
-            echo "Blocking epoptes port by firewall"
-            ufw deny 789
-            echo "Killing remaining running processes"
-            kill $(ps -ax | grep epoptes | cut -d" " -f2) 2> /dev/null
-            kill $(ps -ax | grep epoptes-client | cut -d" " -f2) 2> /dev/null
-            echo "Done!"
-            break
-            ;;
-        "Block epoptes and SSH")
-            echo "Stopping vmware service"
-            service vmware stop
-            echo "Stopping VMware Add-on Service"
-            service vmware-USBArbitrator stop
-            echo "Stopping epoptes service"
-            service epoptes-client stop
-            echo "Stopping SSH service"
-            service ssh stop
-            if sudo apt install ufw> /dev/null 2>&1 ; then
-              echo "The firewall is already installed, skipping"
-            else
-              "Installing firewall"
-              sudo apt install -y ufw 1> /dev/null
-            fi
-            echo "Activating firewall"
-            ufw enable
-            echo "Blocking epoptes port by firewall"
-            ufw deny 789
-            echo "Blocking SSH port by firewall"
-            ufw deny 22/tcp
+            echo "Blocking server IP from kernel"
+            route add -host $(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2) reject
             echo "Killing remaining running processes"
             kill $(ps -ax | grep epoptes | cut -d" " -f2) 2> /dev/null
             kill $(ps -ax | grep epoptes-client | cut -d" " -f2) 2> /dev/null
@@ -81,8 +46,8 @@ do
             break
             ;;
         "Activate epoptes")
-            echo "Unblocking epoptes port by firewall"
-            ufw allow 789
+            echo "Unblocking server IP from kernel"
+            route del $(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2) reject
             echo "Activating epoptes service"
             service epoptes-client start
             echo "Activating vmware service"
@@ -90,27 +55,10 @@ do
             echo "Activating VMware Add-on Service"
             service vmware-USBArbitrator stop
             echo "Activating epoptes"
-            sudo epoptes-client -c
+            epoptes-client -c > /dev/null
+            timeout 2 epoptes-client> /dev/null 2>&1
             echo "Done!"
             break
-            ;;
-        "Activate epoptes and SSH")
-        echo "Unblocking epoptes port by firewall"
-        ufw allow 789
-        echo "Unblocking SSH port by firewall"
-        ufw allow 22/tcp
-        echo "Activating epoptes service"
-        service epoptes-client start
-        echo "Activating SSH service"
-        service ssh start
-        echo "Activating vmware service"
-        service vmware start
-        echo "Activating VMware Add-on Service"
-        service vmware-USBArbitrator stop
-        echo "Activating epoptes"
-        sudo epoptes-client -c
-        echo "Done!"
-        break
             ;;
         "Salir")
         echo "Bye!"
