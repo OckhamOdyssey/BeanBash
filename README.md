@@ -7,15 +7,17 @@
 
 # Funcionamiento
 
-BeanBash es un script escrito en Bash dedicado a bloquear el servicio epoptes y poder evitar la conexión remota desde este servicio. A demás, tiene la posibilidad de bloquear también el servicio SSH para impedir que vuelvan a habilitar epoptes de forma remota. Epoptes utiliza VMWare, por lo que este servicio también debe detenerse.
+BeanBash es un script escrito en Bash dedicado a bloquear el servicio epoptes y poder evitar la conexión remota desde este servicio.
 
-Cada vez que se vuelve a iniciar sesión, epoptes vuelve a iniciarse con todos los servicios, por lo que el script se debe ejecutar cada vez.
+Cada vez que se vuelve a iniciar sesión, epoptes vuelve a iniciarse con todos los servicios. Se ha incluido la opción de bloquearlo automáticamente al inicio de sesión.
 
-Este script utiliza los comandos "service" y "route" por lo que solo funciona con Debian y sus derivados como Ubuntu por el momento, se planea adaptar el script también a ArchLinux y derivados como Manjaro.
+Este script utiliza los comandos "service" y "route" por lo que solo funciona con Debian y sus derivados. El script solo ha sido probado en Ubuntu.
 
-Las opciones de bloqueo detienen los servicios de VMWare y epoptes, luego detecta la dirección IP del equipo servidor y lo bloquea desde el kernel. Tras esto, mata los procesos activos de epoptes.
+La opción de bloqueo detecta la dirección IP del equipo servidor y lo bloquea desde el kernel. La opción de desbloqueo elimina esta restricción.
 
-Las opciones de activación eliminan el bloqueo de la dirección IP del servidor, inicia los servicios de epoptes y vmware y vuelve a ejecutar epoptes-client para su activación. Es posible que, tras su ejecución, la conexión se recupere y se caiga una vez antes de recuperarse por completo.
+La opción de bloqueo automático inserta la orden de bloqueo en el crontab del usuario root para que se ejecute en cada inicio de sesión. La eliminación de automatización quita esta orden del crontab.
+
+La comprobación de estado muestra si hay conexión con el servidor y si el bloqueo automático está activado. Que el bloqueo automático se encuentre activado no implica que el servidor no pueda monitorizar la actividad. Se debe usar la primera opción o reiniciar el sistema para que surja efecto.
 
 # Descarga
 
