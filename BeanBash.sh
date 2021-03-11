@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 # Revisa si el usuario es root
 if [ "$UID" -eq 0 ]
@@ -20,28 +20,19 @@ echo "                                              ";
 echo "                                              ";
 echo ""
 echo "Bienvenido a BeanBash. Desde este script podrás bloquear o desbloquear epoptes."
-echo "Este script se distribuye sin ninguna garantía bajo licencia MIT y el creador no se hace responsable de la finalidad de su uso. Copyright (c) 2020 TheRussianHetzer"
+echo "Este script se distribuye sin ninguna garantía bajo licencia MIT y el creador no se hace responsable de la finalidad de su uso. Copyright (c) 2020-2021 TheRussianHetzer"
 echo "Puedes consultar el repositorio de este script en GitHub. https://github.com/TheRussianHetzer/BeanBash"
 echo "Elige la opción que desees realizar.";
 echo ""
 echo ""
 PS3='Elige una opción: '
-options=("Bloquear epoptes" "Automatizar bloqueo al iniciar sesión" "Activar epoptes" "Eliminar automatización de bloqueo" "Salir")
+options=("Bloquear epoptes" "Automatizar bloqueo al iniciar sesión" "Activar epoptes" "Eliminar automatización de bloqueo" "Comprobación de estado" "Salir")
 select opt in "${options[@]}"
 do
     case $opt in
         "Bloquear epoptes")
-            echo "Deteniendo servicio vmware"
-            service vmware stop
-            echo "Deteniendo servicio complementario vmware"
-            service vmware-USBArbitrator stop
-            echo "Deteniendo servicio epoptes"
-            service epoptes-client stop
             echo "Bloqueando IP del servidor"
             route add -host $(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2) reject
-            echo "Matando procesos en ejecución restantes"
-            kill $(ps -ax | grep epoptes | cut -d" " -f1,2) 2> /dev/null
-            echo "Proceso finalizado"
             break
             ;;
         "Automatizar bloqueo al iniciar sesión")
@@ -58,16 +49,6 @@ do
         "Activar epoptes")
             echo "Desbloqueando IP del servidor"
             route del $(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2) reject
-            echo "Activando servicio epoptes"
-            service epoptes-client start
-            echo "Activado servicio vmware"
-            service vmware start
-            echo "Activando servicio complementario vmware"
-            service vmware-USBArbitrator stop
-            echo "Activando epoptes"
-            epoptes-client -c > /dev/null
-            timeout 2 epoptes-client> /dev/null 2>&1
-            echo "Proceso finalizado"
             break
             ;;
         "Eliminar automatización de bloqueo")
@@ -75,14 +56,38 @@ do
         if [ $? = 0 ]; then
             crontab -l | grep -v "#autobean" | crontab -
           else
-            echo "No se ha encontrado la recla en el cron"
+            echo "No se ha encontrado la regla en el cron"
           fi
           break
           ;;
+        "Comprobación de estado")
+        IP=$(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2)
+          echo "Solicitando respuesta de $IP"
+          ping -c 1 $IP > /dev/null 2>&1
+          if [[ $? = 0 ]]; then
+            echo "Se recibe respuesta del sistema."
+            echo -e "El bloqueo está \e[1m\e[31mdesactivado\e[0m. El sistema puede ser monitorizado"
+          else
+            echo "No se recibe respuesta del sistema"
+            echo "Revisando tabla de redireccionamiento"
+            route | grep -qE "^192.168.0.1.+!"
+            if [[ $? = 0 ]]; then
+              echo "El servicio aparece como bloqueado"
+              echo -e "El bloqueo está \e[1m\e[32mactivado\e[0m"
+            fi
+          fi
+          echo "Revisando archivo cron"
+          crontab -lu root | grep -qE "#autobean$"
+          if [[ $? = 0 ]]; then
+            echo -e "El bloqueo automático está \e[1m\e[32mactivado\e[0m"
+          else
+            echo -e "El bloqueo automático está \e[1m\e[31mdesactivado\e[0m"
+          fi
+          ;;
         "Salir")
-        echo "¡Adiós!"
-            break
-            ;;
+          echo "¡Adiós!"
+          break
+          ;;
         *) echo "invalid option $REPLY";;
     esac
 done
