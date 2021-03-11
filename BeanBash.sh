@@ -26,7 +26,7 @@ echo "Elige la opción que desees realizar.";
 echo ""
 echo ""
 PS3='Elige una opción: '
-options=("Bloquear epoptes" "Activar epoptes" "Salir")
+options=("Bloquear epoptes" "Automatizar bloqueo al iniciar sesión" "Activar epoptes" "Eliminar automatización de bloqueo" "Salir")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -44,6 +44,17 @@ do
             echo "Proceso finalizado"
             break
             ;;
+        "Automatizar bloqueo al iniciar sesión")
+            IP=$(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2)
+            crontab -l 2>&1 | grep -qi "#autobean"
+            if [ $? != 0 ]; then
+              echo "Añadiendo regla cron al usuario root"
+              (crontab -l ; echo "@reboot /sbin/route add -host $IP reject #autobean") | grep -v "no crontab" | sort | uniq | crontab -
+            else
+              echo "La regla ya se encuentra en el cron"
+            fi
+            break
+            ;;
         "Activar epoptes")
             echo "Desbloqueando IP del servidor"
             route del $(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2) reject
@@ -59,6 +70,15 @@ do
             echo "Proceso finalizado"
             break
             ;;
+        "Eliminar automatización de bloqueo")
+        crontab -l 2>&1 | grep -qi "#autobean"
+        if [ $? = 0 ]; then
+            crontab -l | grep -v "#autobean" | crontab -
+          else
+            echo "No se ha encontrado la recla en el cron"
+          fi
+          break
+          ;;
         "Salir")
         echo "¡Adiós!"
             break
