@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x
 
 # Revisa si el usuario es root
 if [ "$UID" -eq 0 ]
@@ -62,18 +62,24 @@ do
           ;;
         "Comprobación de estado")
         IP=$(cat /etc/default/epoptes-client | grep SERVER | cut -d= -f2)
+        DOMAIN=$(nslookup $IP | grep name | cut -d"=" -f2)  
           echo "Solicitando respuesta de $IP"
           ping -c 1 $IP > /dev/null 2>&1
           if [[ $? = 0 ]]; then
-            echo "Se recibe respuesta del sistema."
+            echo "Se recibe respuesta del servidor."
             echo -e "El bloqueo está \e[1m\e[31mdesactivado\e[0m. El sistema puede ser monitorizado"
           else
-            echo "No se recibe respuesta del sistema"
+            echo "No se recibe respuesta del servidor"
             echo "Revisando tabla de redireccionamiento"
-            route | grep -qE "^192.168.0.1.+!"
+            route | grep -qE "^$IP.+!"
             if [[ $? = 0 ]]; then
               echo "El servicio aparece como bloqueado"
               echo -e "El bloqueo está \e[1m\e[32mactivado\e[0m"
+            elif [ 'route | grep -qE "^$DOMAIN.+!"' ]; then
+              echo "El servicio aparece como bloqueado"
+              echo -e "El bloqueo está \e[1m\e[32mactivado\e[0m"
+            else
+              echo "OWO"
             fi
           fi
           echo "Revisando archivo cron"
