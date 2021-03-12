@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # Revisa si el usuario es root
 if [ "$UID" -eq 0 ]
