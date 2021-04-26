@@ -251,7 +251,7 @@ net_menu() {
 installer() {
   dpkg_test
   local INSTALL=$(echo $PATH | cut -d: -f1)
-  cp $0 $INSTALL/bean
+  cp -r $0 $INSTALL/bean
 }
 ## FIN FUNCIONES ##
 dpkg_test
