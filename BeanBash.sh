@@ -275,6 +275,10 @@ if [[ $# -ne 0 ]]; then
       auto_bock
       exit
       ;;
+    i)
+      installer
+      exit
+      ;;
     s)
       prov
       exit
